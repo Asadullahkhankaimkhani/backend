@@ -24,7 +24,7 @@ exports.remove = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const comments = await Comment.find({});
+    const comments = await Comment.find({}).populate("user");
     res.status(200).json(comments);
   } catch (err) {
     res.status(400).json({ message: err.message });

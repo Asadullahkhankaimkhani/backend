@@ -14,8 +14,12 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const data = await AboutUs.find({});
+    const id = data.map((d) => {
+      return d._id;
+    });
     const aboutUs = await AboutUs.findByIdAndUpdate(
-      req.params._id,
+      id,
       { about_para: req.body.about_para, app_version: req.body.app_version },
       { new: true }
     ).exec();
