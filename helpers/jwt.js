@@ -1,4 +1,6 @@
 const expressJwt = require("express-jwt");
+const Admin = require("../models/AdminModel");
+const SuperAdmin = require("../models/SuperAdminModel");
 
 function authJwt() {
   const secret = process.env.SECRET_KEY;
@@ -10,22 +12,16 @@ function authJwt() {
     isRevoked: isRevoked,
   }).unless({
     path: [
-      `${api}/user/checkphone`,
-      `${api}/user/find`,
-      `${api}/user/findEB`,
-      `${api}/user/login`,
-      `${api}/user/loginEB`,
-      `${api}/user/forgotPassword`,
-      `${api}/auth/forgotpassword`,
-      `${api}/auth/codeVerification`,
-      `${api}/auth/saveUserNewPassword`,
       `${api}/auth/register`,
       `${api}/auth/login`,
-      `${api}/aboutus`,
-      {
-        url: /^\/api\/v1\/user\/mobile\/.*/,
-        methods: ["GET", "PUT"],
-      },
+      `${api}/superadmin/login`,
+      `${api}/admin/login`,
+      `${api}/superadmin/register`,
+
+      // {
+      //   url: /^\/api\/v1\/group\/.*/,
+      //   methods: ["GET", "PUT", "DELETE"],
+      // },
       {
         url: /^\/api\/v1\/user\/password\/.*/,
         methods: ["GET", "PUT"],
@@ -41,4 +37,44 @@ async function isRevoked(req, user, done) {
   done();
 }
 
-module.exports = authJwt;
+const admin = async (req, res, next) => {
+  try {
+    const user = await Admin.findById(req.user.id);
+    if (user.role === "admin") {
+      next();
+    } else {
+      res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "admin Middleware Error",
+      err,
+    });
+  }
+};
+
+const superAdmin = async (req, res, next) => {
+  try {
+    const user = await SuperAdmin.findById(req.user.superAdmin.id);
+    if (user.role === "superAdmin") {
+      next();
+    } else {
+      res.status(403).json({
+        success: false,
+        message: "You are not authorized to perform this action",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "SuperAdmin Middleware Error",
+      err,
+    });
+  }
+};
+
+module.exports = { authJwt, admin, superAdmin };
