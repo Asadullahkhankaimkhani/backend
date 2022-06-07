@@ -74,12 +74,6 @@ exports.loginSuperAdmin = async (req, res, next) => {
         if (err) throw err;
         res.status(200).json({
           token,
-          superAdmin: {
-            id: superAdmin.id,
-            name: superAdmin.name,
-            email: superAdmin.email,
-            role: superAdmin.role,
-          },
         });
       }
     );
