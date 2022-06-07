@@ -61,6 +61,9 @@ exports.loginSuperAdmin = async (req, res, next) => {
     const payload = {
       superAdmin: {
         id: superAdmin.id,
+        name: superAdmin.name,
+        email: superAdmin.email,
+        role: superAdmin.role,
       },
     };
 
