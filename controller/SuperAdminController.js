@@ -61,9 +61,6 @@ exports.loginSuperAdmin = async (req, res, next) => {
     const payload = {
       superAdmin: {
         id: superAdmin.id,
-        name: superAdmin.name,
-        email: superAdmin.email,
-        role: superAdmin.role,
       },
     };
 
@@ -77,6 +74,9 @@ exports.loginSuperAdmin = async (req, res, next) => {
         if (err) throw err;
         res.status(200).json({
           token,
+          name: superAdmin.name,
+          email: superAdmin.email,
+          role: superAdmin.role,
         });
       }
     );
